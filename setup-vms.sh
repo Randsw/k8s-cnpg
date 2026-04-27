@@ -12,18 +12,18 @@ vmsingle:
     enabled: true
     hosts:
       - single.kind.cluster
-    ingressClassName: istio
+    ingressClassName: nginx
 vmagent:
   ingress:
     enabled: true
     hosts:
       - agent.kind.cluster
-    ingressClassName: istio
+    ingressClassName: nginx
 alertmanager:
   enabled: true
   ingress:
     enabled: true
-    ingressClassName: istio
+    ingressClassName: nginx
     hosts:
       - alertmanager.kind.cluster
 grafana:
@@ -35,7 +35,7 @@ grafana:
       searchNamespace: ALL
   ingress:
     enabled: true
-    ingressClassName: istio
+    ingressClassName: nginx
     hosts:
         - grafana.kind.cluster
   plugins:

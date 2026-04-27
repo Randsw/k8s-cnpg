@@ -33,3 +33,17 @@ spec:
   storage:
     size: 1Gi
 EOF
+
+cat << EOF | kubectl apply -f -
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: my-postgres-cluster
+  namespace: app
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: my-postgres-cluster
+  podMetricsEndpoints:
+  - port: metrics
+EOF
