@@ -2,11 +2,6 @@
 
 set -e
 
-kubectl create namespace victoria-metrics || true
-
-helm upgrade --install --wait --timeout 35m --atomic --namespace victoria-metrics \
-  --repo https://prometheus-community.github.io/helm-charts prometheus-crd prometheus-operator-crds
-
 helm upgrade --install --wait --timeout 35m --atomic --namespace victoria-metrics --create-namespace  \
   --repo https://victoriametrics.github.io/helm-charts vm victoria-metrics-k8s-stack --values - <<EOF
 victoria-metrics-operator:

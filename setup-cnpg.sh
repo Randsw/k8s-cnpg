@@ -3,7 +3,7 @@
 set -e
 
 helm upgrade --install --wait --timeout 35m --atomic --namespace cnpg --create-namespace  \
-  --repo https://cloudnative-pg.github.io/charts cnpg cnpg/cloudnative-pg --values - <<EOF
+  --repo https://cloudnative-pg.github.io/charts cnpg cloudnative-pg --values - <<EOF
 monitoring:
   podMonitorEnabled: true
   grafanaDashboard:

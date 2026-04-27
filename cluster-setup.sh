@@ -168,6 +168,13 @@ spec:
 EOF
 }
 
+prometheus_crd(){
+  kubectl create namespace victoria-metrics || true
+  
+  helm upgrade --install --wait --timeout 35m --atomic --namespace victoria-metrics \
+  --repo https://prometheus-community.github.io/helm-charts prometheus-crd prometheus-operator-crds
+}
+
 ingress(){
   log "INGRESS-NGINX ..."
 
@@ -180,6 +187,41 @@ controller:
     enabled: true
     serviceMonitor:
       enabled: true
+    prometheusRule:
+      enabled: true
+      rules:
+        - alert: NGINXConfigFailed
+          expr: count(nginx_ingress_controller_config_last_reload_successful == 0) > 0
+          for: 1s
+          labels:
+            severity: critical
+          annotations:
+            description: bad ingress config - nginx config test failed
+            summary: uninstall the latest ingress changes to allow config reloads to resume
+        - alert: NGINXCertificateExpiry
+          expr: (avg(nginx_ingress_controller_ssl_expire_time_seconds{host!="_"}) by (host) - time()) < 604800
+          for: 1s
+          labels:
+            severity: critical
+          annotations:
+            description: ssl certificate(s) will expire in less then a week
+            summary: renew expiring certificates to avoid downtime
+        - alert: NGINXTooMany500s
+          expr: 100 * ( sum( nginx_ingress_controller_requests{status=~"5.+"} ) / sum(nginx_ingress_controller_requests) ) > 5
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Too many 5XXs
+            summary: More than 5% of all requests returned 5XX, this requires your attention
+        - alert: NGINXTooMany400s
+          expr: 100 * ( sum( nginx_ingress_controller_requests{status=~"4.+"} ) / sum(nginx_ingress_controller_requests) ) > 5
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Too many 4XXs
+            summary: More than 5% of all requests returned 4XX, this requires your attention
 EOF
 }
 
@@ -202,6 +244,7 @@ network
 proxies
 cluster
 metallb
+prometheus_crd
 ingress
 dnsmasq
 
