@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 type Entry struct {
@@ -19,10 +21,10 @@ type PageData struct {
 	Entries []Entry
 }
 
-var(
-    writeDB *sql.DB
-    readDB  *sql.DB
-    tmpl = template.Must(template.New("page").Parse(`
+var (
+	writeDB *sql.DB
+	readDB  *sql.DB
+	tmpl    = template.Must(template.New("page").Parse(`
 <!DOCTYPE html>
 <html>
 <head><title>App</title></head>

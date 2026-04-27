@@ -17,6 +17,14 @@ spec:
       containers:
       - name: go-app
         image: ghcr.io/randsw/k8s-cnpg:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 8080
         env:
