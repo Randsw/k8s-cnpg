@@ -60,6 +60,6 @@ Press `List` to show all entry in table.
 
 ### Check monitoring
 
-- [Grafana](grafana.kind.cluster)
+- [Grafana](http://grafana.kind.cluster)
 
 Check dashboard `CloudNativePG`.
