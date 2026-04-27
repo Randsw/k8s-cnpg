@@ -36,6 +36,7 @@ Manager: <input type="text" name="manager"><br>
 <button type="submit">Save</button>
 </form>
 <form method="GET" action="/list"><button type="submit">List</button></form>
+<form method="GET" action="/clear"><button type="submit">Clear</button></form>
 {{if .Entries}}
 <table border="1">
 <tr><th>Team</th><th>Year</th><th>Manager</th></tr>
@@ -55,7 +56,7 @@ func main() {
 	user := os.Getenv("POSTGRESQL_USER")
 	pass := os.Getenv("POSTGRESQL_PASSWORD")
 	writeURL := os.Getenv("POSTGRESQL_URL")
-    database := os.Getenv("POSTGRESQL_DATABASE")
+	database := os.Getenv("POSTGRESQL_DATABASE")
 	if user == "" || pass == "" || writeURL == "" {
 		log.Fatal("Missing required POSTGRESQL env vars for write")
 	}
@@ -88,6 +89,9 @@ func main() {
 	})
 	http.HandleFunc("/save", saveHandler)
 	http.HandleFunc("/list", listHandler)
+	http.HandleFunc("/clear", func(w http.ResponseWriter, r *http.Request) {
+		tmpl.Execute(w, nil)
+	})
 
 	fmt.Println("Listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
