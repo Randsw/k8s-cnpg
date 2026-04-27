@@ -55,10 +55,11 @@ func main() {
 	user := os.Getenv("POSTGRESQL_USER")
 	pass := os.Getenv("POSTGRESQL_PASSWORD")
 	writeURL := os.Getenv("POSTGRESQL_URL")
+    database := os.Getenv("POSTGRESQL_DATABASE")
 	if user == "" || pass == "" || writeURL == "" {
 		log.Fatal("Missing required POSTGRESQL env vars for write")
 	}
-	writeDSN := fmt.Sprintf("postgres://%s:%s@%s?sslmode=disable", user, pass, writeURL)
+	writeDSN := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", user, pass, writeURL, database)
 	writeDB, err = sql.Open("pgx", writeDSN)
 	if err != nil {
 		log.Fatalf("write db open error: %v", err)
@@ -69,7 +70,7 @@ func main() {
 	if readURL == "" {
 		log.Fatal("Missing POSTGRESQL_URL_R env var for read")
 	}
-	readDSN := fmt.Sprintf("postgres://%s:%s@%s?sslmode=disable", user, pass, readURL)
+	readDSN := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", user, pass, readURL, database)
 	readDB, err = sql.Open("pgx", readDSN)
 	if err != nil {
 		log.Fatalf("read db open error: %v", err)

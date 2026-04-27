@@ -42,6 +42,8 @@ spec:
           value: my-postgres-cluster-rw
         - name: POSTGRESQL_URL_R
           value: my-postgres-cluster-ro
+        - name: POSTGRESQL_DATABASE
+          value: app_db
 ---
 apiVersion: v1
 kind: Service
