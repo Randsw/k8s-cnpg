@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-app
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-app
+  template:
+    metadata:
+      labels:
+        app: go-app
+    spec:
+      containers:
+      - name: go-app
+        image: ghcr.io/randsw/k8s-cnpg:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: POSTGRESQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-app-user-creds
+              key: username
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-app-user-creds
+              key: password
+        - name: POSTGRESQL_URL
+          value: my-postgres-cluster-rw
+        - name: POSTGRESQL_URL_R
+          value: my-postgres-cluster-ro
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-app-service
+  namespace: app
+spec:
+  selector:
+    app: go-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: ClusterIP
